@@ -158,6 +158,10 @@
   }
   .toolbar button:hover { background: var(--card2); }
   .foot { margin-top: 14px; color: var(--muted); font-size: 11px; text-align: center; line-height: 1.7; }
+  @media (max-width: 480px) {
+    .hero { flex-direction: column; align-items: stretch; gap: 12px; }
+    .ring-wrap { align-self: center; }
+  }
 </style>
 </head>
 <body>
