@@ -3,163 +3,207 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>每日打卡</title>
+<title>ZEXU · PRIVATE DAILY</title>
 <style>
   :root {
-    --paper: #f5f2ea;
-    --card: #fffdf9;
-    --ink: #1d1c19;
-    --muted: #7d776c;
-    --line: #e4ded2;
-    --green: #2f6b4f;
-    --blue: #3a5f8a;
-    --amber: #a06a2c;
-    --shadow: 0 1px 2px rgba(29,28,25,.04), 0 10px 26px rgba(29,28,25,.05);
+    --bg: #0a0a0b;
+    --card: #131315;
+    --card2: #18181b;
+    --line: rgba(242,237,227,.09);
+    --line2: rgba(242,237,227,.18);
+    --text: #f2ede3;
+    --muted: #8d867a;
+    --gold: #c9a86a;
+    --body: #8fae97;
+    --study: #8aa2c4;
+    --python: #c9a86a;
+    --serif: "Songti SC", "Noto Serif SC", Georgia, "Times New Roman", serif;
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { margin: 0; padding: 0; }
   body {
     min-height: 100vh;
     background:
-      radial-gradient(1000px 620px at 8% -12%, rgba(47,107,79,.07), transparent 60%),
-      radial-gradient(820px 520px at 102% -6%, rgba(160,106,44,.06), transparent 55%),
-      var(--paper);
-    color: var(--ink);
+      radial-gradient(900px 600px at 6% -12%, rgba(201,168,106,.10), transparent 60%),
+      radial-gradient(700px 520px at 102% -4%, rgba(143,174,151,.05), transparent 55%),
+      var(--bg);
+    color: var(--text);
     font-family: "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    padding: 20px 18px calc(30px + env(safe-area-inset-bottom));
+    padding: 22px 18px calc(32px + env(safe-area-inset-bottom));
   }
-  .app { max-width: 680px; margin: 0 auto; }
-  .top { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; margin-bottom: 22px; }
-  .brand { font-size: 16px; font-weight: 700; letter-spacing: .08em; }
-  .brand span { display: block; margin-top: 5px; font-size: 11px; font-weight: 400; letter-spacing: .04em; color: var(--muted); }
-  .tabs { display: flex; gap: 18px; padding-top: 2px; }
+  body::after {
+    content: ""; position: fixed; inset: 0; pointer-events: none; opacity: .035; z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .app { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; }
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 26px; }
+  .identity { display: flex; align-items: center; gap: 11px; }
+  .monogram {
+    width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--serif); font-size: 17px; color: var(--gold); letter-spacing: 0;
+  }
+  .who .name { font-family: var(--serif); font-size: 15px; letter-spacing: .22em; }
+  .who .sub { font-size: 9px; color: var(--muted); letter-spacing: .3em; margin-top: 3px; }
+  .tabs { display: flex; gap: 20px; }
   .tab {
-    border: 0; background: none; color: var(--muted); font-size: 13px;
-    padding: 6px 0; border-bottom: 2px solid transparent; cursor: pointer;
-    font-family: inherit; transition: color .15s ease;
+    border: 0; background: none; color: var(--muted); font-size: 12px;
+    padding: 5px 0; border-bottom: 1px solid transparent; cursor: pointer;
+    font-family: inherit; letter-spacing: .12em; transition: color .2s ease;
   }
-  .tab.active { color: var(--ink); border-bottom-color: var(--green); font-weight: 600; }
+  .tab.active { color: var(--text); border-bottom-color: var(--gold); }
   .hero {
     display: flex; align-items: flex-end; gap: 26px;
-    padding: 4px 0 24px; border-bottom: 1px solid var(--line); margin-bottom: 20px;
+    padding: 4px 0 26px; border-bottom: 1px solid var(--line); margin-bottom: 20px;
+    animation: rise .55s cubic-bezier(.2,.7,.3,1) both;
   }
+  @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
   .hero-date { flex: 0 0 auto; }
-  .hero-date .weekday { font-size: 11px; letter-spacing: .22em; color: var(--muted); }
+  .hero-date .weekday { font-size: 10px; letter-spacing: .3em; color: var(--muted); }
   .hero-date .day {
-    font-family: "Songti SC", "Noto Serif SC", Georgia, serif;
-    font-size: 68px; line-height: 1.04; font-weight: 600; letter-spacing: -.02em;
+    font-family: var(--serif); font-size: 76px; line-height: 1.02; font-weight: 400;
+    letter-spacing: -.03em; margin-top: 2px;
   }
-  .hero-date .month { font-size: 11px; color: var(--muted); margin-top: 6px; }
-  .hero-progress { flex: 1; padding-bottom: 8px; min-width: 0; }
-  .progress-text b { font-size: 30px; font-weight: 600; letter-spacing: -.02em; }
-  .progress-text span { font-size: 12px; color: var(--muted); margin-left: 7px; }
-  .progress-line { height: 3px; background: var(--line); border-radius: 99px; margin: 11px 0 12px; overflow: hidden; }
-  .progress-line i { display: block; height: 100%; width: 0; background: var(--green); border-radius: 99px; transition: width .4s ease; }
-  .progress-note { font-size: 12px; color: var(--muted); line-height: 1.65; }
+  .hero-date .month { font-family: var(--serif); font-size: 11px; color: var(--muted); letter-spacing: .12em; margin-top: 7px; }
+  .hero-progress { flex: 1; padding-bottom: 9px; min-width: 0; }
+  .progress-text { display: flex; align-items: baseline; gap: 7px; }
+  .progress-text b { font-family: var(--serif); font-size: 34px; font-weight: 400; }
+  .progress-text span { font-size: 10px; color: var(--muted); letter-spacing: .18em; }
+  .progress-line { height: 1px; background: var(--line2); margin: 13px 0 13px; position: relative; }
+  .progress-line i { position: absolute; left: 0; top: -1px; height: 3px; width: 0; background: var(--gold); transition: width .5s ease; }
+  .progress-note { font-size: 11px; color: var(--muted); line-height: 1.7; letter-spacing: .02em; }
   .list { display: flex; flex-direction: column; gap: 12px; }
   .track {
     position: relative; background: var(--card); border: 1px solid var(--line);
-    border-radius: 14px; padding: 15px 16px 14px 19px; box-shadow: var(--shadow);
+    border-radius: 12px; padding: 16px 16px 14px 20px;
+    animation: rise .55s cubic-bezier(.2,.7,.3,1) both;
   }
+  .track:nth-child(2) { animation-delay: .06s; }
+  .track:nth-child(3) { animation-delay: .12s; }
   .track::before {
-    content: ""; position: absolute; left: 0; top: 14px; bottom: 14px; width: 3px;
-    border-radius: 0 3px 3px 0; background: var(--accent);
+    content: ""; position: absolute; left: 0; top: 15px; bottom: 15px; width: 1px;
+    background: var(--accent);
   }
   .track-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-  .track-name { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; }
-  .track-name .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
-  .streak { font-size: 11px; color: var(--muted); white-space: nowrap; }
+  .track-name { display: flex; align-items: center; gap: 9px; font-size: 14px; font-weight: 500; letter-spacing: .06em; }
+  .track-name .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+  .streak { font-family: var(--serif); font-size: 11px; color: var(--muted); white-space: nowrap; }
   .goal {
-    width: 100%; border: 0; border-bottom: 1px dashed var(--line); background: transparent;
-    color: var(--ink); font-size: 12px; font-family: inherit;
-    padding: 8px 0 7px; margin: 6px 0 11px;
+    width: 100%; border: 0; border-bottom: 1px solid var(--line); background: transparent;
+    color: var(--text); font-size: 12px; font-family: inherit;
+    padding: 9px 0 8px; margin: 7px 0 12px; letter-spacing: .02em;
   }
   .row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
   .check {
-    padding: 8px 17px; border-radius: 99px; border: 1px solid var(--line);
-    background: transparent; color: var(--muted); font-size: 12px; font-weight: 600;
-    font-family: inherit; cursor: pointer; transition: all .16s ease;
+    padding: 8px 18px; border-radius: 99px; border: 1px solid var(--line2);
+    background: transparent; color: var(--muted); font-size: 11px; font-weight: 600;
+    font-family: inherit; cursor: pointer; letter-spacing: .12em; transition: all .2s ease;
   }
-  .check.done { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .time { font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+  .check.done { background: var(--gold); border-color: var(--gold); color: #0a0a0b; }
+  .time { font-size: 10px; color: var(--muted); display: flex; align-items: center; gap: 5px; letter-spacing: .08em; }
   .minutes {
-    width: 42px; border: 0; border-bottom: 1px solid var(--line); background: transparent;
-    color: var(--ink); font-size: 12px; text-align: center; font-family: inherit;
-    padding: 2px 0;
+    width: 38px; border: 0; border-bottom: 1px solid var(--line2); background: transparent;
+    color: var(--text); font-size: 12px; text-align: center; font-family: inherit; padding: 2px 0;
   }
-  .mini { display: flex; gap: 3px; margin-left: auto; align-items: center; }
-  .mini i { width: 6px; height: 6px; border-radius: 50%; background: var(--line); }
+  .mini { display: flex; gap: 4px; margin-left: auto; align-items: center; }
+  .mini i { width: 5px; height: 5px; border-radius: 50%; background: rgba(242,237,227,.12); }
   .mini i.on { background: var(--accent); }
   .note {
-    width: 100%; min-height: 44px; border: 0; border-top: 1px solid var(--line);
-    background: transparent; color: var(--ink); font-size: 12px; line-height: 1.6;
-    padding: 10px 0 0; margin-top: 11px; resize: vertical; font-family: inherit;
+    width: 100%; min-height: 42px; border: 0; border-top: 1px solid var(--line);
+    background: transparent; color: var(--text); font-size: 12px; line-height: 1.7;
+    padding: 11px 0 0; margin-top: 12px; resize: vertical; font-family: inherit;
   }
+  .note::placeholder, .goal::placeholder { color: rgba(141,134,122,.6); }
   .stats {
     display: grid; grid-template-columns: repeat(4, 1fr);
-    background: var(--card); border: 1px solid var(--line); border-radius: 14px;
-    overflow: hidden; box-shadow: var(--shadow); margin-bottom: 16px;
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    overflow: hidden; margin-bottom: 16px;
+    animation: rise .55s cubic-bezier(.2,.7,.3,1) both;
   }
-  .stat { padding: 14px 6px 12px; text-align: center; border-right: 1px solid var(--line); }
+  .stat { padding: 16px 6px 14px; text-align: center; border-right: 1px solid var(--line); }
   .stat:last-child { border-right: 0; }
-  .stat b {
-    display: block; font-family: "Songti SC", "Noto Serif SC", Georgia, serif;
-    font-size: 25px; font-weight: 600; line-height: 1.2;
-  }
-  .stat span { font-size: 10px; color: var(--muted); }
+  .stat b { display: block; font-family: var(--serif); font-size: 28px; font-weight: 400; line-height: 1.2; }
+  .stat span { font-size: 9px; color: var(--muted); letter-spacing: .12em; }
   .calendar {
-    background: var(--card); border: 1px solid var(--line); border-radius: 14px;
-    padding: 16px; box-shadow: var(--shadow); margin-bottom: 14px;
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 18px 16px 16px; margin-bottom: 14px;
+    animation: rise .55s cubic-bezier(.2,.7,.3,1) both; animation-delay: .06s;
   }
-  .cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
-  .cal-title { font-size: 14px; font-weight: 600; }
+  .cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .cal-title { font-family: var(--serif); font-size: 14px; letter-spacing: .12em; }
   .nav {
     width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--line);
-    background: transparent; color: var(--ink); font-size: 15px; line-height: 1;
+    background: transparent; color: var(--text); font-size: 15px; line-height: 1;
     font-family: inherit; cursor: pointer;
   }
-  .cal-week { display: grid; grid-template-columns: repeat(7, 1fr); margin-bottom: 4px; }
-  .cal-week span { text-align: center; font-size: 10px; color: var(--muted); }
+  .cal-week { display: grid; grid-template-columns: repeat(7, 1fr); margin-bottom: 6px; }
+  .cal-week span { text-align: center; font-size: 9px; color: var(--muted); letter-spacing: .1em; }
   .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
   .cal-cell {
     aspect-ratio: 1 / 1; border: 0; background: transparent; border-radius: 50%;
-    color: var(--ink); font-size: 12px; font-family: inherit; cursor: pointer;
+    color: var(--text); font-size: 12px; font-family: inherit; cursor: pointer;
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
     padding: 2px;
   }
   .cal-cell.empty { cursor: default; }
-  .cal-cell.today { font-weight: 700; color: var(--green); }
-  .cal-cell.sel { background: rgba(47,107,79,.10); }
+  .cal-cell.today { color: var(--gold); font-weight: 700; }
+  .cal-cell.sel { background: rgba(201,168,106,.12); }
   .cal-cell .dots { display: flex; gap: 2px; }
-  .cal-cell .dots i { width: 4px; height: 4px; border-radius: 50%; background: var(--line); }
+  .cal-cell .dots i { width: 3px; height: 3px; border-radius: 50%; background: rgba(242,237,227,.14); }
   .cal-cell .dots i.on { background: var(--c); }
   .detail {
-    background: var(--card); border: 1px solid var(--line); border-radius: 14px;
-    padding: 16px; box-shadow: var(--shadow);
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 16px;
+    animation: rise .55s cubic-bezier(.2,.7,.3,1) both; animation-delay: .1s;
   }
-  .detail h3 { margin: 0 0 11px; font-size: 13px; font-weight: 600; }
+  .detail h3 { margin: 0 0 12px; font-family: var(--serif); font-size: 13px; font-weight: 400; letter-spacing: .1em; }
   .detail-row {
-    display: grid; grid-template-columns: 66px 58px 1fr; gap: 8px;
-    padding: 10px 0; border-top: 1px solid var(--line); font-size: 12px; align-items: start;
+    display: grid; grid-template-columns: 62px 52px 1fr; gap: 8px;
+    padding: 11px 0; border-top: 1px solid var(--line); font-size: 12px; align-items: start;
   }
   .detail-row:first-of-type { border-top: 0; }
-  .detail-name { font-weight: 600; }
+  .detail-name { font-weight: 500; letter-spacing: .08em; }
   .detail-state { color: var(--muted); }
-  .detail-state.done { color: var(--green); }
-  .detail-note { color: var(--ink); line-height: 1.6; word-break: break-word; }
+  .detail-state.done { color: var(--gold); }
+  .detail-note { color: var(--text); line-height: 1.7; word-break: break-word; }
   .muted { color: var(--muted); }
-  .rate { text-align: center; font-size: 12px; color: var(--muted); padding: 16px 0 2px; }
-  .rate b { color: var(--green); font-size: 15px; }
-  .toolbar { display: flex; gap: 10px; justify-content: center; margin-top: 22px; flex-wrap: wrap; }
+  .rate { text-align: center; font-size: 11px; color: var(--muted); padding: 18px 0 2px; letter-spacing: .1em; }
+  .rate b { color: var(--gold); font-family: var(--serif); font-size: 16px; font-weight: 400; }
+  .toolbar { display: flex; gap: 9px; justify-content: center; margin-top: 24px; flex-wrap: wrap; }
   .toolbar button {
     background: transparent; border: 1px solid var(--line); color: var(--muted);
-    border-radius: 99px; padding: 8px 15px; font-size: 11px; cursor: pointer; font-family: inherit;
+    border-radius: 99px; padding: 8px 14px; font-size: 10px; cursor: pointer;
+    font-family: inherit; letter-spacing: .12em;
   }
-  .foot { margin-top: 15px; color: var(--muted); font-size: 10px; text-align: center; line-height: 1.7; }
+  .toolbar button:hover { border-color: var(--line2); color: var(--text); }
+  .foot { margin-top: 16px; color: rgba(141,134,122,.7); font-size: 9px; text-align: center; letter-spacing: .18em; }
+  .lock {
+    position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center;
+    background:
+      radial-gradient(700px 500px at 50% 0%, rgba(201,168,106,.08), transparent 60%),
+      var(--bg);
+    padding: 24px;
+  }
+  .lock-box { width: 100%; max-width: 290px; text-align: center; }
+  .monogram.big { width: 64px; height: 64px; font-size: 28px; margin: 0 auto 24px; }
+  .lock-title { font-family: var(--serif); font-size: 22px; letter-spacing: .14em; }
+  .lock-sub { font-size: 10px; color: var(--muted); letter-spacing: .28em; margin-top: 10px; }
+  .lock-input {
+    width: 100%; margin-top: 26px; background: transparent; border: 0;
+    border-bottom: 1px solid var(--line2); color: var(--text); font-size: 22px;
+    text-align: center; letter-spacing: .55em; padding: 10px; font-family: inherit;
+  }
+  .lock-enter {
+    margin-top: 20px; width: 100%; padding: 12px; border-radius: 99px;
+    border: 1px solid var(--gold); background: var(--gold); color: #0a0a0b;
+    font-weight: 700; font-size: 12px; letter-spacing: .2em; font-family: inherit; cursor: pointer;
+  }
+  .lock-msg { height: 18px; margin-top: 12px; font-size: 11px; color: #c97b6a; letter-spacing: .08em; }
+  .lock-hint { margin-top: 28px; font-size: 9px; color: rgba(141,134,122,.7); letter-spacing: .08em; line-height: 1.7; }
   @media (max-width: 480px) {
     .hero { gap: 18px; }
-    .hero-date .day { font-size: 58px; }
-    .progress-text b { font-size: 25px; }
+    .hero-date .day { font-size: 62px; }
+    .progress-text b { font-size: 28px; }
     .stats { grid-template-columns: repeat(2, 1fr); }
     .stat:nth-child(2) { border-right: 0; }
     .stat:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
@@ -167,28 +211,49 @@
 </style>
 </head>
 <body>
-<div class="app">
-  <div class="top">
-    <div class="brand">每日打卡<span>把今天变成看得到的一天</span></div>
-    <div class="tabs">
+<div class="app" id="app">
+  <header class="top">
+    <div class="identity">
+      <div class="monogram">Z</div>
+      <div class="who">
+        <div class="name">ZEXU</div>
+        <div class="sub">PRIVATE DAILY</div>
+      </div>
+    </div>
+    <nav class="tabs">
       <button class="tab active" data-tab="today">今天</button>
       <button class="tab" data-tab="history">历史</button>
-    </div>
-  </div>
+    </nav>
+  </header>
   <main id="view"></main>
   <div class="toolbar">
-    <button id="exportBtn">导出备份</button>
-    <button id="importBtn">导入备份</button>
+    <button id="exportBtn">导出</button>
+    <button id="importBtn">导入</button>
+    <button id="lockBtn">隐私锁</button>
     <input type="file" id="importFile" accept="application/json" style="display:none">
   </div>
-  <div class="foot">数据只存本机浏览器，不上传。建议每周导出一次备份。</div>
+  <div class="foot">只为一个人而做 · 数据只存本机</div>
 </div>
+
+<div class="lock" id="lockScreen" style="display:none">
+  <div class="lock-box">
+    <div class="monogram big">Z</div>
+    <div class="lock-title">只有你能打开</div>
+    <div class="lock-sub">输入四位密码</div>
+    <input class="lock-input" id="lockInput" type="password" inputmode="numeric" maxlength="4" placeholder="••••">
+    <button class="lock-enter" id="lockEnter">进入</button>
+    <div class="lock-msg" id="lockMsg"></div>
+    <div class="lock-hint">忘记密码？清除本站数据即可重置。<br>这只是门帘，不是真正的加密。</div>
+  </div>
+</div>
+
 <script>
 const KEY = 'daily-checkin-v1';
+const LOCK_KEY = 'daily-checkin-lock';
 const TRACKS = [
-  { id: 'body',   name: '身体',   color: '#2f6b4f' },
-  { id: 'study',  name: '学习',   color: '#3a5f8a' },
-  { id: 'python', name: 'Python', color: '#a06a2c' }
+  { id: 'body',   name: '身体',   color: '#8fae97' },
+  { id: 'study',  name: '学习',   color: '#8aa2c4' },
+  { id: 'python', name: 'Python', color: '#c9a86a' }
 ];
 const DEFAULT_GOALS = {
   body:   '按计划训练 · 记录体重/力量/步数',
@@ -270,6 +335,11 @@ function rate30() {
 function esc(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
+function simpleHash(s) {
+  let h = 5381;
+  for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0;
+  return String(h);
+}
 
 function renderToday() {
   const k = todayKey();
@@ -350,7 +420,7 @@ function renderHistory() {
   const y = calMonth.getFullYear();
   const m = calMonth.getMonth();
   return '<section class="stats">' +
-    '<div class="stat"><b>' + totalDoneDays() + '</b><span>总打卡天数</span></div>' +
+    '<div class="stat"><b>' + totalDoneDays() + '</b><span>总打卡</span></div>' +
     '<div class="stat"><b>' + streak('body') + '</b><span>身体连续</span></div>' +
     '<div class="stat"><b>' + streak('study') + '</b><span>学习连续</span></div>' +
     '<div class="stat"><b>' + streak('python') + '</b><span>Python 连续</span></div>' +
@@ -436,7 +506,51 @@ document.getElementById('importFile').addEventListener('change', e => {
   e.target.value = '';
 });
 
-render();
+document.getElementById('lockBtn').addEventListener('click', () => {
+  const current = localStorage.getItem(LOCK_KEY);
+  if (current) {
+    const cur = prompt('输入当前密码以移除隐私锁');
+    if (cur === null) return;
+    if (simpleHash(cur) !== current) { alert('密码不对'); return; }
+    localStorage.removeItem(LOCK_KEY);
+    alert('已移除隐私锁');
+  } else {
+    const p = prompt('设置一个四位数字密码（只防君子，不是真正加密）');
+    if (!p) return;
+    if (!/^\d{4}$/.test(p)) { alert('请输入四位数字'); return; }
+    localStorage.setItem(LOCK_KEY, simpleHash(p));
+    alert('已设置。下次打开需要输入密码。');
+  }
+});
+
+function showLock() {
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('lockScreen').style.display = 'flex';
+  setTimeout(() => document.getElementById('lockInput').focus(), 120);
+}
+function hideLock() {
+  document.getElementById('lockScreen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+}
+document.getElementById('lockEnter').addEventListener('click', () => {
+  const v = document.getElementById('lockInput').value.trim();
+  if (simpleHash(v) === localStorage.getItem(LOCK_KEY)) {
+    sessionStorage.setItem('daily-unlocked', '1');
+    hideLock();
+    render();
+  } else {
+    document.getElementById('lockMsg').textContent = '密码不对';
+  }
+});
+document.getElementById('lockInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('lockEnter').click();
+});
+
+if (localStorage.getItem(LOCK_KEY) && sessionStorage.getItem('daily-unlocked') !== '1') {
+  showLock();
+} else {
+  render();
+}
 </script>
 </body>
 </html>
